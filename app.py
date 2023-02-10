@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 import json
 from ipaddress import IPv4Network, IPv4Address
 
@@ -53,3 +53,10 @@ def hello_world():
 def list_subnets():
     results = [ network_to_dict(x) for x in service.subnets ]
     return json.dumps(results)
+
+@app.post("/range")
+def next_range():
+    parsed = request.get_json(force=True)
+    results = service.next_range(int(parsed["size"]))
+
+    return network_to_dict(results)
